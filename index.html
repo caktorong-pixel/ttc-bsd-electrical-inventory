@@ -86,15 +86,16 @@ const naturalSort=(arr,get=x=>x)=>[...arr].sort((a,b)=>naturalCompare(get(a),get
 // Urutan MCB/MCCB mengikuti nomor kelompok terlebih dahulu, lalu urutan fasa:
 // L1-1, L2-1, L3-1, L1-2, L2-2, L3-2, dan seterusnya.
 const mcbCompare=(a,b)=>{
- const name=v=>String(typeof v==='object'?(v?.number??''):(v??'')).trim().toUpperCase().replace(/\\s+/g,'');
- const x=name(a),y=name(b),rx=x.match(/^L([123])-(\\d+)$/),ry=y.match(/^L([123])-(\\d+)$/);
+ const name=v=>String(typeof v==='object'?(v?.number??''):(v??'')).trim().toUpperCase().replace(/\s+/g,'');
+ const x=name(a),y=name(b);
+ const rx=x.match(/^L([123])-(\d+)$/),ry=y.match(/^L([123])-(\d+)$/);
  if(rx&&ry){
   const circuit=Number(rx[2])-Number(ry[2]);
   if(circuit)return circuit;
   const phase=Number(rx[1])-Number(ry[1]);
   if(phase)return phase;
  }
- return naturalCompare(x,y);
+ return x.localeCompare(y,undefined,{numeric:true});
 };
 const mcbSort=(arr,get=x=>x)=>[...arr].sort((a,b)=>mcbCompare(get(a),get(b)));
 const blank=()=>({ups:[],rectifiers:[],ipdus:[],dcpdus:[],mcbs:[],racks:[],devices:[]});
